@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             // 2. 「安全でないDB接続」：パスワードがソースコード内にあるため検知されます
-            Connection conn = DriverManager.getConnection(
+            DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/db", 
                 "admin", 
                 ADMIN_PASSWORD
