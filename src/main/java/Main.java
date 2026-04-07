@@ -1,27 +1,13 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.io.IOException;
 
 public class Main {
-    public void doQuery(String userInput) {
+    public static void main(String[] args) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "user", "pass");
-            Statement stmt = conn.createStatement();
-            
-            // 文字列連結によるSQLインジェクション脆弱性
-            String sql = "SELECT * FROM users WHERE id = '" + userInput + "'";
-            ResultSet rs = stmt.executeQuery(sql);
-            
-            while (rs.next()) {
-                System.out.println(rs.getString("name"));
-            }
-        } catch (Exception e) {
+            // 外部入力 args[0] をそのまま exec に渡す（非常に危険）
+            String command = args[0];
+            Runtime.getRuntime().exec(command); 
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        new Main().doQuery(args[0]); // 外部入力（引数）をそのまま渡す
     }
 }
