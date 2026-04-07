@@ -1,16 +1,21 @@
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class Main {
-    public static void main(String[] args) {
-        // args[0] を外部からの入力ソースとして使用
-        String input = args[0];
+    // 1. 「ハードコードされたパスワード」：これだけで警告が出ます
+    private static final String ADMIN_PASSWORD = "password12345";
 
+    public static void main(String[] args) {
         try {
-            // 外部入力をそのまま Runtime.exec() に渡す（OSコマンドインジェクション）
-            // これにより、例えば 'ls; rm -rf /' のような攻撃が可能になるため、CodeQLが警告を出します
-            Runtime.getRuntime().exec(input);
-        } catch (IOException e) {
-            // エラー処理
+            // 2. 「安全でないDB接続」：パスワードがソースコード内にあるため検知されます
+            Connection conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/db", 
+                "admin", 
+                ADMIN_PASSWORD
+            );
+        } catch (Exception e) {
+            // 3. 「スタックトレースの露出」：例外をそのまま標準出力するのはセキュリティリスクと見なされます
+            e.printStackTrace();
         }
     }
 }
