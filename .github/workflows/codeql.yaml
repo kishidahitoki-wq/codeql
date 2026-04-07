@@ -24,6 +24,10 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: 'java-kotlin'
+        # 1. クエリセットを「セキュリティ + 品質」の最大版にする
+        queries: security-and-quality 
+        # 2. 設定ファイル（後述）を読み込む
+        config-file: .github/codeql/codeql-config.yml
 
     # MavenやGradleを自動検知してビルドを実行
     - name: Autobuild
