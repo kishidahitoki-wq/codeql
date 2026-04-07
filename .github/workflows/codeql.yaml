@@ -1,0 +1,23 @@
+name: "CodeQL Analysis"
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write  # 結果をSecurityタブに書き込むために必要
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: python  # 解析したい言語を指定
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
