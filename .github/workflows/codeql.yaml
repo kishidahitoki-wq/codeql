@@ -24,7 +24,7 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: 'java-kotlin'
-        queries: security-extended  # ここを 'security-extended' に変更
+        queries: security-and-quality  # ここを書き換え
 
     # MavenやGradleを自動検知してビルドを実行
     - name: Autobuild
