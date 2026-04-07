@@ -1,0 +1,11 @@
+name: "Stricter Config"
+
+# Javaにおいて「何でも攻撃者の入力になり得る」とみなす設定
+threat-models:
+  # デフォルトは 'remote'（Web等）のみ。
+  # 'local' を足すことで、args[0] や環境変数、ローカルファイルからの入力も脆弱性の起点になります。
+  java: [remote, local]
+
+# さらに個別のクエリを細かく追加したい場合に記述（今回は上記のsuiteで十分ですが）
+queries:
+  - uses: security-and-quality
