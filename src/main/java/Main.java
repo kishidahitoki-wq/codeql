@@ -1,32 +1,26 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.io.File;
 
 public class Main {
-    // 1. ハードコードされた認証情報 (これは絶対に出ます)
-    private static final String DB_PASSWORD = "my-secret-password-12345";
-
     public static void main(String[] args) {
         try {
-            // 2. 外部から注入可能な環境変数を「入力ソース」にする
-            String taintedInput = System.getenv("USER_ID");
+            // threat-models: [local] に設定することで、
+            // args[0] が「危険な汚染源（Tainted Source）」として認識されるようになります。
+            String userInput = args[0];
 
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "admin", DB_PASSWORD);
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db", "user", "pass");
             Statement stmt = conn.createStatement();
-            
-            // 3. SQLインジェクション (確実な脆弱性)
-            String sql = "SELECT * FROM users WHERE id = '" + taintedInput + "'";
+
+            // SQLインジェクション (Critical)
+            String sql = "SELECT * FROM users WHERE id = '" + userInput + "'";
             stmt.executeQuery(sql);
 
-            // 4. パス・トラバーサル (外部入力でファイルを操作)
-            File file = new File("/data/" + taintedInput);
-            if (file.exists()) {
-                file.delete(); // 攻撃者が任意のファイルを消せるリスク
-            }
+            // OSコマンドインジェクション (Critical)
+            Runtime.getRuntime().exec(userInput);
 
         } catch (Exception e) {
-            // 5. スタックトレースの露出
+            // 情報の露出 (Medium)
             e.printStackTrace();
         }
     }
